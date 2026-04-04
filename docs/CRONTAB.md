@@ -7,13 +7,10 @@
 ## 时间线总览
 
 ```
-3:05 AM   → Situation Awareness: 每日摘要 + 摄像头缓存刷新
-4:00 AM   → Session Sync: 导出 AI session 归档
-6:30 AM   → WeChat DB Parser: 导出每日消息为 CSV（如适用）
-7:00 AM   → Daily Briefing: 生成个人晨报 → Email
-8:00 AM   → AI Heartbeat Observer: 扫描文件变动，提取观察写入 OBSERVATIONS.md
-Every 2m  → Situation Awareness: 快照采集（交通/摄像头/警报）
-Every 12h → Situation Awareness: 风力预警检查
+10:10 AM   → AI Heartbeat Observer: 扫描文件变动，提取观察写入 OBSERVATIONS.md
+10:15 AM   → Situation Awareness: 每日摘要
+10:17 AM   → Session Sync: 导出 AI session 归档
+10:20 AM   → Daily Briefing: 生成个人晨报
 Weekly    → AI Heartbeat Reflector: 合并/提升/清理记忆
 Daily     → Crontab Monitor: 健康审计，发现异常则发告警邮件
 ```
