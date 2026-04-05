@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.66",
+    "@opencode-ai/plugin": "1.2.27"
+  }
+}

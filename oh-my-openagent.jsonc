@@ -1,0 +1,105 @@
+{
+  // oh-my-openagent configuration
+  // Based on Chinese LLM research (2026-04-05)
+
+  "agents": {
+    "sisyphus": {
+      // Main orchestrator - uses Kimi K2.5 for coding SOTA
+      "model": "Friday-OpenAI/kimi-k2.5",
+      "temperature": 0.3,
+      "max_tokens": 8192
+    },
+    "hephaestus": {
+      // Autonomous deep worker - uses MiniMax M2.7 for Agent RL
+      "model": "Friday-Cheap/MiniMax-M2.7",
+      "temperature": 0.3,
+      "max_tokens": 8192
+    },
+    "prometheus": {
+      // Strategic planner - uses GLM-5 for reasoning
+      "model": "Friday-Cheap/GLM-5.1",
+      "temperature": 0.5,
+      "max_tokens": 8192
+    },
+    "oracle": {
+      // Architecture and debugging - uses Kimi K2.5
+      "model": "Friday-OpenAI/kimi-k2.5",
+      "temperature": 0.3,
+      "max_tokens": 8192
+    },
+    "librarian": {
+      // Docs and code search - uses MiniMax for speed
+      "model": "Friday-Cheap/MiniMax-M2.7",
+      "temperature": 0.3,
+      "max_tokens": 8192
+    },
+    "explore": {
+      // Fast codebase grep - uses MiniMax for speed
+      "model": "Friday-Cheap/MiniMax-M2.7",
+      "temperature": 0.3,
+      "max_tokens": 4096
+    }
+  },
+
+  // Category to model routing
+  // Maps task type to default agent
+  "category_default_model": {
+    "deep": "Friday-OpenAI/kimi-k2.5",
+    "quick": "Friday-Cheap/MiniMax-M2.7",
+    "ultrabrain": "Friday-OpenAI/kimi-k2.5",
+    "visual-engineering": "Friday-Cheap/MiniMax-M2.7",
+    "business-logic": "Friday-Cheap/GLM-5.1",
+    "reasoning": "Friday-Cheap/GLM-5.1",
+    "creative": "Friday-OpenAI/qwen3.5-plus"
+  },
+
+  // Model capabilities reference (from research)
+  "model_capabilities": {
+    "kimi-k2.5": {
+      "context": 256000,
+      "strengths": ["coding", "math", "reasoning", "tool_use"],
+      "benchmarks": {
+        "LiveCodeBench": "53.7%",
+        "SWE-bench-Agentic": "65.8%",
+        "MATH-500": "97.4%"
+      }
+    },
+    "MiniMax-M2.7": {
+      "context": 128000,
+      "strengths": ["agent_rl", "coding", "self_evolution", "speed"],
+      "benchmarks": {
+        "SWE-Pro": "56.22%"
+      }
+    },
+    "GLM-5.1": {
+      "context": 128000,
+      "strengths": ["agentic", "research", "deep_thinking"]
+    },
+    "qwen3.5-plus": {
+      "context": 262000,
+      "strengths": ["long_context", "multilingual", "unified_thinking"]
+    }
+  },
+
+  // MCP servers - built-in
+  "mcp_servers": {
+    "enabled": true,
+    "servers": ["websearch", "context7", "grep_app"]
+  },
+
+  // Hooks - can disable specific hooks
+  "disabled_hooks": [],
+
+  // ultrawork settings
+  "ultrawork": {
+    "concurrency_limit": 5,
+    "auto_retry": true,
+    "max_retries": 3
+  },
+
+  // Hash-anchored edit settings
+  "hashline": {
+    "enabled": true,
+    "validate_on_edit": true
+  }
+}
