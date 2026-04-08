@@ -1,25 +1,15 @@
 #!/usr/bin/env python3
-"""
-L1 Observer Agent (Trigger Script)
-Instructs OpenCode-Builder to autonomously scan, filter, and write to memory.
-
-Usage:
-    python observer.py [date] [--model model] [--no-delete]
-    
-Environment variables (.env):
-    OPENCODE_BASE_URL - OpenCode server URL (default: http://localhost:4096)
-    OPENCODE_USERNAME - Auth username (default: opencode)
-    OPENCODE_PASSWORD - Auth password
-    OPENCODE_DEFAULT_MODEL - Default model (default: MiniMax-M2.7)
-    OPENCODE_DEFAULT_PROVIDER - Default provider (default: Friday-Cheap)
-"""
 import os
 import sys
 import time
 from datetime import datetime
 from opencode_client import OpenCodeClient
 
-WORKSPACE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+DEFAULT_PROVIDER = "meituan"
+DEFAULT_MODEL = "claude-sonnet-4-6"
+DEFAULT_AGENT = "oracle"
+
+WORKSPACE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 KNOWLEDGE_BASE = os.path.join(WORKSPACE, "periodic_jobs", "ai_heartbeat", "docs", "KNOWLEDGE_BASE.md")
 OBSERVATIONS_PATH = os.path.join(WORKSPACE, "contexts", "memory", "OBSERVATIONS.md")
 
@@ -55,21 +45,26 @@ def main():
     parser.add_argument('date', nargs='?', default=datetime.now().strftime("%Y-%m-%d"),
                         help='Target date (YYYY-MM-DD)')
     parser.add_argument('--model', default=None,
-                        help='Model ID to use (e.g., provider/model-id or just model-id)')
+                        help='Model ID to use (format: provider/model-id, default: minimax/MiniMax-M2.7)')
     parser.add_argument('--no-delete', action='store_true',
                         help='Keep session after completion (default: delete)')
     args = parser.parse_args()
 
     target_date = args.date
-    model_id = args.model
     delete_after = not args.no_delete
 
-    # Load .env from workspace
+    if args.model and "/" in args.model:
+        provider_id, model_id = args.model.split("/", 1)
+        agent = None
+    else:
+        provider_id = DEFAULT_PROVIDER
+        model_id = args.model or DEFAULT_MODEL
+        agent = DEFAULT_AGENT
+
     dotenv_path = os.path.join(WORKSPACE, ".env")
     if os.path.exists(dotenv_path):
         load_dotenv(dotenv_path)
 
-    # Idempotency: skip if entry for target_date already exists
     if os.path.exists(OBSERVATIONS_PATH):
         with open(OBSERVATIONS_PATH, "r", encoding="utf-8") as f:
             content = f.read()
@@ -77,61 +72,38 @@ def main():
             print(f"Idempotent skip: entry for {target_date} already exists in OBSERVATIONS.md")
             return
 
-    print(f"Triggering Fully Agentic Observer for date: {target_date} using model: {model_id or 'default'}...")
-    
+    print(f"Triggering Observer for date: {target_date} using {provider_id}/{model_id}...")
+
     client = OpenCodeClient()
-    
-    # Find a parent session to fork from
-    sessions = client.list_sessions()
-    parent_session_id = None
-    parent_message_id = None
-    if sessions and len(sessions) > 0:
-        # Use the most recent session that has messages
-        for sess in reversed(sessions):
-            sid = sess.get("id")
-            if sid:
-                msgs = client.get_session_messages(sid)
-                if msgs and len(msgs) > 0:
-                    parent_session_id = sid
-                    parent_message_id = msgs[-1].get("info", {}).get("id")
-                    break
-    
-    if parent_session_id:
-        print(f"Forking from session: {parent_session_id}")
-        session_id = client.create_session(
-            f"Heartbeat L1 - {target_date}",
-            parent_session_id=parent_session_id,
-            parent_message_id=parent_message_id
-        )
-    else:
-        print("No parent session found, creating new session")
-        session_id = client.create_session(f"Heartbeat L1 - {target_date}")
-    
+
+    session_id = client.create_session(f"Heartbeat L1 - {target_date}")
     if not session_id:
         print("Failed to create session")
         return
-    
+
     print(f"Created session: {session_id}")
-        
+
     prompt = PROMPT_TEMPLATE.format(
         kb_path=KNOWLEDGE_BASE,
         target_date=target_date,
         workspace=WORKSPACE,
         observations_path=OBSERVATIONS_PATH
     )
-    
-    # Send message
-    result = client.send_message(session_id, prompt, model_id=model_id)
-    print(f"Message sent, result: {result}")
-    
-    # Wait for completion (long timeout for agentic tasks)
+
+    print("Sending prompt via prompt_async...")
+    ok = client.prompt_async(session_id, prompt, provider_id=provider_id, model_id=model_id, agent=agent)
+    if not ok:
+        print("Failed to send prompt")
+        if delete_after:
+            client.delete_session(session_id)
+        return
+
     print("Waiting for session to complete (this may take several minutes)...")
     if client.wait_for_session_complete(session_id, poll_interval=30, max_wait=7200):
         print("Session completed successfully")
     else:
         print("Session did not complete within timeout")
-    
-    # Cleanup
+
     if delete_after:
         client.delete_session(session_id)
         print(f"Session {session_id} deleted")

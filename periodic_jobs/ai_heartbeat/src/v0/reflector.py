@@ -8,7 +8,8 @@ import sys
 from opencode_client import OpenCodeClient
 from datetime import datetime
 
-KNOWLEDGE_BASE = "/path/to/your/workspace/periodic_jobs/ai_heartbeat/docs/KNOWLEDGE_BASE.md"
+WORKSPACE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+KNOWLEDGE_BASE = os.path.join(WORKSPACE, "periodic_jobs", "ai_heartbeat", "docs", "KNOWLEDGE_BASE.md")
 
 PROMPT_TEMPLATE = """
 执行记忆系统的"反思与晋升"任务。
@@ -16,7 +17,7 @@ PROMPT_TEMPLATE = """
 SOP: {kb_path}
 
 步骤：
-1. 读取 /contexts/memory/OBSERVATIONS.md，分析 🔴 和高优 🟡 条目
+1. 读取 {workspace}/contexts/memory/OBSERVATIONS.md，分析 🔴 和高优 🟡 条目
 2. 将具有普适性的内容晋升到 rules/，按职责边界分类：
    - SOUL.md: Agent 身份与核心价值观
    - USER.md: 用户画像与人生哲学
@@ -29,30 +30,66 @@ SOP: {kb_path}
 完成后回复简短晋升汇报。
 """
 
+DEFAULT_PROVIDER = "meituan"
+DEFAULT_MODEL = "claude-sonnet-4-6"
+DEFAULT_AGENT = "oracle"
+
 def main():
     import argparse
+    from dotenv import load_dotenv
+
     parser = argparse.ArgumentParser(description='L2 Reflector Agent')
-    parser.add_argument('--model', default='<your-model-id>',
-                        choices=['<your-model-id>'],
-                        help='Model ID to use')
+    parser.add_argument('--model', default=None,
+                        help='Model ID to use (format: provider/model-id, default: minimax/MiniMax-M2.7)')
+    parser.add_argument('--no-delete', action='store_true',
+                        help='Keep session after completion (default: delete)')
     args = parser.parse_args()
-    
-    model_id = args.model
+
+    delete_after = not args.no_delete
     target_date = datetime.now().strftime("%Y-%m-%d")
 
-    print(f"Triggering Fully Agentic Reflector using model: {model_id}...")
+    if args.model and "/" in args.model:
+        provider_id, model_id = args.model.split("/", 1)
+        agent = None
+    else:
+        provider_id = DEFAULT_PROVIDER
+        model_id = args.model or DEFAULT_MODEL
+        agent = DEFAULT_AGENT
+
+    dotenv_path = os.path.join(WORKSPACE, ".env")
+    if os.path.exists(dotenv_path):
+        load_dotenv(dotenv_path)
+
+    print(f"Triggering Reflector using {provider_id}/{model_id}...")
     client = OpenCodeClient()
-    
+
     session_id = client.create_session(f"Heartbeat L2 Reflector - {target_date}")
     if not session_id:
+        print("Failed to create session")
         return
-        
-    prompt = PROMPT_TEMPLATE.format(kb_path=KNOWLEDGE_BASE)
-    client.send_message(session_id, prompt, model_id=model_id)
-    # If send_message timed out, agent may still be running; poll until done
-    print("Waiting for session to complete (sync mode)...")
-    client.wait_for_session_complete(session_id)
-    print(f"Task complete (Session: {session_id}).")
+
+    print(f"Created session: {session_id}")
+
+    prompt = PROMPT_TEMPLATE.format(kb_path=KNOWLEDGE_BASE, workspace=WORKSPACE)
+    print("Sending prompt via prompt_async...")
+    ok = client.prompt_async(session_id, prompt, provider_id=provider_id, model_id=model_id, agent=agent)
+    if not ok:
+        print("Failed to send prompt")
+        if delete_after:
+            client.delete_session(session_id)
+        return
+
+    print("Waiting for session to complete (this may take several minutes)...")
+    if client.wait_for_session_complete(session_id, poll_interval=30, max_wait=7200):
+        print("Session completed successfully")
+    else:
+        print("Session did not complete within timeout")
+
+    if delete_after:
+        client.delete_session(session_id)
+        print(f"Session {session_id} deleted")
+    else:
+        print(f"Session {session_id} retained")
 
 if __name__ == "__main__":
     main()

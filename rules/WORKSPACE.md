@@ -38,3 +38,20 @@
 
 <!-- 随着你的项目增长，在这里添加活跃项目的快捷路由 -->
 <!-- 格式：- `project-name` → `adhoc_jobs/project_name/` (说明) -->
+
+## 活跃项目路由
+
+### Poros（美团 ES 代理/网关服务）
+- **代码根目录**：`~/Desktop/Project/poros/`
+- **子模块**：poros-common、poros-client、poros-high-level-client、poros-service、poros-elasticsearch-plugin、poros-java-api-client
+- **技术栈**：Java 8 + Guice + Netty + ES Client fork（无 Spring）
+- **学城文档根**：https://km.sankuai.com/collabpage/1127183403（contentId: 1127183403）
+- **KB 本地路径**：`~/.config/opencode/contexts/projects/poros-kb/`（Markdown+Git 为 AI 工作层，学城为权威来源）
+
+### DataMatrix（美团云搜数据平台）
+- **代码根目录**：`~/Desktop/Project/` 下各子服务目录（已授权直接访问）
+- **子服务**：pontos（数据集成）、athena（数据建模）、hermes（数据计算）、kugget（数据质量）、worksheet（工单）
+- **技术栈**：Java/Spring Boot + Blade + Flink/Spark + ES8 + HBase + Pigeon
+- **学城文档根**：https://km.sankuai.com/collabpage/2708001137（contentId: 2708001137）
+- **KB 本地路径**：`~/.config/opencode/contexts/projects/datamatrix-kb/`（Markdown+Git 为 AI 工作层，学城为权威来源）
+- **调研报告**：`contexts/survey_sessions/datamatrix_kb_selection_20260405.md`

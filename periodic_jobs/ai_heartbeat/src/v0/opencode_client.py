@@ -125,13 +125,6 @@ class OpenCodeClient:
                 "parts": [{"type": "text", "text": message}]
             }
             
-            # Only add model if explicitly specified
-            if model_id and provider_id:
-                payload["model"] = {
-                    "modelID": model_id,
-                    "providerID": provider_id
-                }
-            
             response = requests.post(
                 f"{self.base_url}/session/{session_id}/message",
                 json=payload,
@@ -160,6 +153,50 @@ class OpenCodeClient:
             if "Read timed out" not in str(e):
                 print(f"Request Exception: {e}")
             return None
+
+    def prompt_async(self, session_id, message, provider_id=None, model_id=None, agent=None):
+        if provider_id is None and model_id and "/" in model_id:
+            provider_id, model_id = model_id.split("/", 1)
+        payload = {"parts": [{"type": "text", "text": message}]}
+        if agent:
+            payload["agent"] = agent
+        if provider_id:
+            payload["providerID"] = provider_id
+        if model_id:
+            payload["modelID"] = model_id
+        try:
+            response = requests.post(
+                f"{self.base_url}/session/{session_id}/prompt_async",
+                json=payload,
+                headers=self.headers,
+                timeout=30,
+            )
+            return response.status_code == 204
+        except Exception as e:
+            print(f"Error calling prompt_async: {e}")
+            return False
+
+    def init_session(self, session_id, message_id, model_id=None, provider_id=None):
+        if provider_id is None and model_id and "/" in model_id:
+            provider_id, model_id = model_id.split("/", 1)
+        if model_id is None:
+            model_id = self._default_model
+        if provider_id is None:
+            provider_id = self._default_provider
+        try:
+            response = requests.post(
+                f"{self.base_url}/session/{session_id}/init",
+                json={"modelID": model_id, "providerID": provider_id, "messageID": message_id},
+                headers=self.headers,
+                timeout=MESSAGE_TIMEOUT,
+            )
+            response.raise_for_status()
+            return True
+        except requests.exceptions.ReadTimeout:
+            return True
+        except Exception as e:
+            print(f"Error calling /init: {e}")
+            return False
 
     def get_session_messages(self, session_id):
         """Get all messages in a session."""

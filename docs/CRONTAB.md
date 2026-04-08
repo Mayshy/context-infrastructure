@@ -7,10 +7,10 @@
 ## 时间线总览
 
 ```
-10:10 AM   → AI Heartbeat Observer: 扫描文件变动，提取观察写入 OBSERVATIONS.md
+10:30 AM   → AI Heartbeat Observer: 扫描文件变动，提取观察写入 OBSERVATIONS.md
 10:15 AM   → Situation Awareness: 每日摘要
 10:17 AM   → Session Sync: 导出 AI session 归档
-10:20 AM   → Daily Briefing: 生成个人晨报
+10:30 AM   → Daily Briefing: 生成个人晨报
 Weekly    → AI Heartbeat Reflector: 合并/提升/清理记忆
 Daily     → Crontab Monitor: 健康审计，发现异常则发告警邮件
 ```
@@ -25,7 +25,7 @@ Daily     → Crontab Monitor: 健康审计，发现异常则发告警邮件
 
 - **脚本**：`periodic_jobs/ai_heartbeat/src/v0/observer.py`
 - **依赖**：OpenCode Server API（`OPENCODE_API_URL`）
-- **建议时间**：每日 8:00 AM（在 daily briefing 之后）
+- **建议时间**：每日 10:30 AM（在 daily briefing 之后）
 
 ### AI Heartbeat Reflector（每周）
 
@@ -33,7 +33,7 @@ Daily     → Crontab Monitor: 健康审计，发现异常则发告警邮件
 
 - **脚本**：`periodic_jobs/ai_heartbeat/src/v0/reflector.py`
 - **依赖**：OpenCode Server API（`OPENCODE_API_URL`）
-- **建议时间**：每周日 9:00 AM
+- **建议时间**：每周一 10:30 AM
 
 ### Crontab Monitor（每日）
 
@@ -41,7 +41,7 @@ Daily     → Crontab Monitor: 健康审计，发现异常则发告警邮件
 
 - **脚本**：`periodic_jobs/ai_heartbeat/src/v0/jobs/crontab_monitor.py`
 - **依赖**：OpenCode Server API、Gmail（`GMAIL_USERNAME` / `GMAIL_APP_PASSWORD`）
-- **建议时间**：每日 9:00 AM
+- **建议时间**：每日 10:30 AM
 
 ### AI News Survey（每日/每周）
 
@@ -49,7 +49,7 @@ Daily     → Crontab Monitor: 健康审计，发现异常则发告警邮件
 
 - **脚本**：`periodic_jobs/ai_heartbeat/src/v0/jobs/ai_news_survey.py`
 - **依赖**：OpenCode Server API、Gmail 或 Kit API
-- **建议时间**：每日 8:00 AM（日报）或每周一 8:00 AM（周报）
+- **建议时间**：每日 10:30 AM（日报）或每周一 10:30 AM（周报）
 
 ---
 
@@ -62,11 +62,11 @@ Daily     → Crontab Monitor: 健康审计，发现异常则发告警邮件
 # 以下时间均为本地时间。如需指定时区，在 crontab 顶部添加：
 # TZ=America/Los_Angeles
 
-# AI Heartbeat Observer — 每日 8:00 AM
-0 8 * * * cd /path/to/your/workspace && /path/to/your/workspace/.venv/bin/python periodic_jobs/ai_heartbeat/src/v0/observer.py >> /tmp/observer.log 2>&1
+# AI Heartbeat Observer — 每日 10:30 AM
+30 10 * * * cd /path/to/your/workspace && /path/to/your/workspace/.venv/bin/python periodic_jobs/ai_heartbeat/src/v0/observer.py >> /tmp/observer.log 2>&1
 
-# AI Heartbeat Reflector — 每周日 9:00 AM
-0 9 * * 0 cd /path/to/your/workspace && /path/to/your/workspace/.venv/bin/python periodic_jobs/ai_heartbeat/src/v0/reflector.py >> /tmp/reflector.log 2>&1
+# AI Heartbeat Reflector — 每周一 10:30 AM
+30 10 * * 1 cd /path/to/your/workspace && /path/to/your/workspace/.venv/bin/python periodic_jobs/ai_heartbeat/src/v0/reflector.py >> /tmp/reflector.log 2>&1
 
 # Crontab Monitor — 每日 9:00 AM
 0 9 * * * cd /path/to/your/workspace && /path/to/your/workspace/.venv/bin/python periodic_jobs/ai_heartbeat/src/v0/jobs/crontab_monitor.py >> /tmp/crontab_monitor.log 2>&1

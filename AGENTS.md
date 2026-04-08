@@ -24,14 +24,20 @@ Don't ask permission. Just do it.
 
 AI 可复用的能力分为两类，定位不同、调用方式不同。
 
+> **⚠️ 强制调用规则**：
+> - **Personal Skills** → 必须用 `read` 工具直接读取文件，**禁止**用 `skill()` 调用
+> - **Toolbox Skills** → 必须用 `skill({ name: "xxx" })` 调用，**禁止**用 `read` 读取 SKILL.md
+> 
+> 违反此规则会导致错误调用方式（如把 Personal Skill 当 Toolbox Skill 查，或反过来），影响任务执行质量。
+
 ### Personal Skills（个人成长型）
 
 **位置**：`rules/skills/`  
 **定位**：个人成长、AI 迭代、认知沉淀类 workflow  
-**调用方式**：直接 Read 文件内容，边理解边执行  
+**调用方式**：`read` 工具直接读取文件，边理解边执行  
 **索引**：`rules/skills/INDEX.md`
 
-遇到复杂任务（调研、并行、认知提炼）时，先读对应 personal skill 理解步骤，再执行。
+遇到复杂任务（调研、并行、认知提炼）时，**第一步**必须先读对应 personal skill 理解步骤，再执行。
 
 常用 personal skills：
 - **深度调研** → `rules/skills/workflow_deep_research_survey.md`
@@ -50,7 +56,7 @@ AI 可复用的能力分为两类，定位不同、调用方式不同。
 
 ```
 1. 工具型任务 → skill tool（toolbox）→ `~/.config/opencode/skills/`
-2. 复杂 workflow → personal skill → `rules/skills/`
+2. 复杂 workflow → personal skill → `rules/skills/` → 用 read 调用
 3. 都没有 → 系统工具
 ```
 
