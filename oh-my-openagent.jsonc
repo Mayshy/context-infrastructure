@@ -4,38 +4,39 @@
 
   "agents": {
     "sisyphus": {
-      // Main orchestrator - uses MiniMax M2.7 (confirmed working)
       "model": "meituan/claude-opus-4-6",
       "temperature": 0.3,
       "max_tokens": 8192
     },
     "hephaestus": {
-      // Autonomous deep worker - uses MiniMax M2.7
       "model": "meituan/claude-opus-4-6",
       "temperature": 0.3,
       "max_tokens": 8192
     },
     "prometheus": {
-      // Strategic planner - uses MiniMax M2.7
       "model": "meituan/claude-opus-4-6",
       "temperature": 0.5,
       "max_tokens": 8192
     },
     "oracle": {
-      // Architecture and debugging - uses meituan Claude Sonnet
       "model": "meituan/claude-opus-4-6",
       "temperature": 0.3,
       "max_tokens": 8192
     },
     "librarian": {
       // Docs and code search - uses MiniMax for speed
-      "model": "meituan/claude-opus-4-6",
+      "model": "minimax/MiniMax-M2.7",
       "temperature": 0.3,
       "max_tokens": 8192
     },
     "explore": {
       // Fast codebase grep - uses MiniMax for speed
       "model": "minimax/MiniMax-M2.7",
+      "temperature": 0.3,
+      "max_tokens": 8192
+    },
+    "sisyphus-junior": {
+      "model": "meituan/claude-sonnet-4-6",
       "temperature": 0.3,
       "max_tokens": 8192
     }

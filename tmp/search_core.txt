@@ -1,0 +1,9 @@
+/Users/shenhuayu/.config/opencode/contexts/survey_sessions/superpowers_vs_oh_my_openagent_20260409.md
+/Users/shenhuayu/.config/opencode/contexts/survey_sessions/iterm2_terminal_ai_survey_20260405.md
+/Users/shenhuayu/.config/opencode/contexts/survey_sessions/unix_file_read_cmd.md
+/Users/shenhuayu/.config/opencode/contexts/survey_sessions/spine_protection_survey_20260406.md
+/Users/shenhuayu/.config/opencode/contexts/survey_sessions/oh_my_openagent_survey_20260405.md
+/Users/shenhuayu/.config/opencode/contexts/survey_sessions/chinese_llm_survey_20260405.md
+/Users/shenhuayu/.config/opencode/contexts/survey_sessions/datamatrix_kb_selection_20260405.md
+/Users/shenhuayu/.config/opencode/contexts/survey_sessions/macos_terminal_ai_dev_survey_20260405.md
+/Users/shenhuayu/.config/opencode/contexts/memory/OBSERVATIONS.md

@@ -33,6 +33,7 @@
 ## Python 环境
 - 根目录 `.venv/` 为工作区级环境，用 `uv pip install` 管理依赖
 - 需要隔离时在 `adhoc_jobs/<project>/.venv/` 建独立环境
+- **Cron 脚本注意**：cron 任务使用系统 Python（`/usr/bin/env python3`），不继承 `.venv`。若脚本依赖 `.venv` 中的包（如 `dotenv`），shebang 必须改为 `.venv/bin/python`，或在 cron 调用前 `source .venv/bin/activate`。否则会静默失败（`ModuleNotFoundError`）。
 
 ## 快速查询
 
@@ -42,16 +43,17 @@
 ## 活跃项目路由
 
 ### Poros（美团 ES 代理/网关服务）
+- **KB(知识库) 本地路径**：`~/.config/opencode/contexts/projects/poros-kb/`（Markdown+Git 为 AI 工作层，该知识库和本地代码仓库比学城更具时效性）
 - **代码根目录**：`~/Desktop/Project/poros/`
 - **子模块**：poros-common、poros-client、poros-high-level-client、poros-service、poros-elasticsearch-plugin、poros-java-api-client
 - **技术栈**：Java 8 + Guice + Netty + ES Client fork（无 Spring）
 - **学城文档根**：https://km.sankuai.com/collabpage/1127183403（contentId: 1127183403）
-- **KB 本地路径**：`~/.config/opencode/contexts/projects/poros-kb/`（Markdown+Git 为 AI 工作层，学城为权威来源）
+
 
 ### DataMatrix（美团云搜数据平台）
+- **KB(知识库) 本地路径**：`~/.config/opencode/contexts/projects/datamatrix-kb/`（Markdown+Git 为 AI 工作层，该知识库和本地代码仓库比学城更具时效性）
 - **代码根目录**：`~/Desktop/Project/` 下各子服务目录（已授权直接访问）
 - **子服务**：pontos（数据集成）、athena（数据建模）、hermes（数据计算）、kugget（数据质量）、worksheet（工单）
 - **技术栈**：Java/Spring Boot + Blade + Flink/Spark + ES8 + HBase + Pigeon
 - **学城文档根**：https://km.sankuai.com/collabpage/2708001137（contentId: 2708001137）
-- **KB 本地路径**：`~/.config/opencode/contexts/projects/datamatrix-kb/`（Markdown+Git 为 AI 工作层，学城为权威来源）
 - **调研报告**：`contexts/survey_sessions/datamatrix_kb_selection_20260405.md`

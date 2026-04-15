@@ -14,7 +14,7 @@ Before doing anything else:
 4. Read `rules/COMMUNICATION.md` — how to think and communicate (especially for non-coding tasks)
 5. Read `rules/skills/INDEX.md` — understand available skills
 
-Don't ask permission. Just do it.
+Don't ask permission. Just do it. Do not skip this step.
 
 ## File Routing
 

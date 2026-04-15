@@ -25,6 +25,11 @@ def extract_features_parallel(
     all_new_chunks = []
     
     def process_file(file_path: str):
+        thread_embedder = EmbeddingClient(
+            base_url=embedder.base_url,
+            model=embedder.model,
+            api_key=embedder.api_key,
+        )
         try:
             path = Path(file_path)
             if not path.exists():
@@ -42,13 +47,15 @@ def extract_features_parallel(
                 return []
                 
             # 获取 embeddings
-            embeddings = embedder.embed_batch([c.text for c in chunks])
+            embeddings = thread_embedder.embed_batch([c.text for c in chunks])
             for c, emb in zip(chunks, embeddings):
                 c.embedding = np.array(emb, dtype=np.float32)
             
             return chunks
         except Exception as e:
+            import traceback
             print(f"Error processing {file_path}: {e}", file=sys.stderr)
+            traceback.print_exc(file=sys.stderr)
             return []
 
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
@@ -72,8 +79,8 @@ def main():
     parser.add_argument("--query", required=True, help="Natural language query")
     parser.add_argument("--top-k", type=int, default=5, help="Number of results to return")
     parser.add_argument("--workers", type=int, default=4, help="Number of parallel workers for embedding")
-    parser.add_argument("--endpoint", default="http://localhost:1234/v1", help="Embedding API endpoint")
-    parser.add_argument("--model", default="text-embedding-qwen3-embedding-8b", help="Embedding model name")
+    parser.add_argument("--endpoint", default="https://aigc.sankuai.com/v1/openai/native", help="Embedding API endpoint")
+    parser.add_argument("--model", default="text-embedding-miffy-002", help="Embedding model name")
     
     args = parser.parse_args()
     
