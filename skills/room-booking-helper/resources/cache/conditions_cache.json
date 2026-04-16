@@ -1,0 +1,64 @@
+{
+  "cached_at": 1772632811363,
+  "data": {
+    "equips": [
+      {
+        "id": 1,
+        "name": "Zoom"
+      },
+      {
+        "id": 2,
+        "name": "腾讯会议"
+      },
+      {
+        "id": 3,
+        "name": "投影仪"
+      },
+      {
+        "id": 4,
+        "name": "电视"
+      },
+      {
+        "id": 5,
+        "name": "白板"
+      }
+    ],
+    "capacity": [
+      {
+        "capacityMin": 1,
+        "capacityMax": 6,
+        "name": "1-6人"
+      },
+      {
+        "capacityMin": 7,
+        "capacityMax": 14,
+        "name": "7-14人"
+      },
+      {
+        "capacityMin": 15,
+        "capacityMax": 21,
+        "name": "15-21人"
+      },
+      {
+        "capacityMin": 22,
+        "capacityMax": 50,
+        "name": "22-50人"
+      },
+      {
+        "capacityMin": 51,
+        "capacityMax": 999,
+        "name": "50人以上"
+      }
+    ],
+    "window": [
+      {
+        "id": 1,
+        "name": "有窗"
+      },
+      {
+        "id": 0,
+        "name": "无窗"
+      }
+    ]
+  }
+}

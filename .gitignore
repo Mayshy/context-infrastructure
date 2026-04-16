@@ -2,9 +2,13 @@ node_modules
 bun.lock
 package-lock.json
 logs/
+__pycache__/
+*.pyc
 
-# Excluded as requested
-skills/
+# Excluded as requested - only catclaw-related skills
+skills/catclaw-image/
+skills/catclaw-search/
+skills/friday-catclaw-mcp/
 opencode.json
 opencode.json.backup
 

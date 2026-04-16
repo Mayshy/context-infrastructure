@@ -95,20 +95,34 @@ Date: 2026-04-13
 
 ---
 
+Date: 2026-04-12
+
+🔴 High: [基础设施故障] ai_heartbeat observer cron 于 Apr 12 10:30 因 `ModuleNotFoundError: No module named 'dotenv'` 静默失败（logs/observer.log 第 21-33 行）：cron 使用系统 python3（非 .venv），.venv/bin/python 路径在该时间点不存在或未正确配置。导致 Apr 12 observer 任务完全跳过，本条目为事后手动补录。根因与 Apr 14 记录一致，修复方向：cron 命令使用 .venv/bin/python。
+🟢 Low: [静默日] Apr 12 全天无 opencode 工作 session，无文件变动（find -mtime 扫描结果为空）。无需补录任何项目进展或技术决策。
+
+---
+
 Date: 2026-04-14
 
-🔴 High: [架构方法论] Managed Agents 核心设计原则（来源：contexts/survey_sessions/managed_agents_survey_20260413.md）：对 LLM-based 系统，正确做法是设计稳定接口抽象（Session/Harness/Sandbox 三层解耦），让实现可自由替换，而非针对当前模型弱点写 workaround。Harness 补丁会随模型迭代变成技术债。构建 meta-harness 层（能运行任意 harness 的框架）是长期运营系统的正确方向。
-🔴 High: [基础设施约束] ai_heartbeat observer cron 任务存在 Python 环境问题：cron 使用系统 python3（非 .venv），导致 `ModuleNotFoundError: No module named 'dotenv'`（logs/observer.log，Apr 13 10:30）。`.venv/bin/python` 实际指向 python3.14，dotenv 可正常 import；问题在于 cron shebang 未使用 .venv。修复路径：将 observer.py shebang 改为 `.venv/bin/python` 或 cron 命令前 source activate。此问题已在 rules/WORKSPACE.md 中有文档记录但尚未修复。
-🟡 Medium: [调研完成] Anthropic Managed Agents 深度认知提炼完成，存档于 contexts/survey_sessions/managed_agents_survey_20260413.md。核心结论：Session（append-only 事件流）≠ Context Window；解耦带来 p50 TTFT 下降 ~60%、p95 下降 >90%；安全保证应来自结构（credentials 不进 sandbox），而非行为假设。
-🟡 Medium: [规则层更新] rules/ 下多文件于 Apr 13 19:56-19:57 集中更新：SOUL.md（新增"外部系统集成原则"章节，引用 bestpractice_external_system_integration.md）、WORKSPACE.md（内容未见实质变化）、rules/skills/INDEX.md（新增 bestpractice_external_system_integration.md 条目）、rules/skills/bestpractice_external_system_integration.md（新建）。这次更新将"先查 KB 再写代码"从 OBSERVATIONS 观测提升为 L3 规则。
-🟡 Medium: [配置变更] oh-my-openagent.jsonc 于 Apr 13 11:25 更新：librarian/explore agent 切换为 minimax/MiniMax-M2.7（原为其他模型），category_default_model 中 quick 路由到 MiniMax-M2.7，artistry 类别路由已移除（当前配置无 artistry/unspecified-high 映射）。
-🟢 Low: [包依赖] package.json 更新：@opencode-ai/plugin 升至 1.3.17，@ai-sdk/anthropic 保持 ^3.0.66。
+🔴 High: [基础设施修复] ai_heartbeat observer cron 的 `ModuleNotFoundError: No module named 'dotenv'` 根因已定位：cron 使用系统 python3 而非 .venv/bin/python，且 .venv 在 Apr 12-13 时不存在。修复方案：在 .venv 中安装 python-dotenv（`python-dotenv-1.2.2` 已于 Apr 13 安装至 `.venv/lib/python3.14/site-packages/dotenv/`），cron 命令需显式使用 `.venv/bin/python`。这是 observer 自动化运行的前置条件，直接影响记忆系统的连续性。
+🟢 Low: [静默日] Apr 14 全天无 opencode 工作 session（当日无工作 session 记录），无用户发起的文件变动。observer.log 显示 Apr 14 的 observer 任务已由自动化脚本触发并成功完成（ses_2762cf7d7ffeXfUtrxGcqTj0F3）。
 
 ---
 
 Date: 2026-04-15
 
-🟡 Medium: [基础设施状态] ai_heartbeat cron 体系今日运行正常：`periodic_jobs/ai_heartbeat/src/v0/jobs/ai_news_survey.py` 于 08:00 成功触发（logs/ai_news_survey.log），`periodic_jobs/ai_heartbeat/src/v0/jobs/crontab_monitor.py` 于 09:00 成功触发（logs/crontab_monitor.log）；observer cron（10:30）今日尚未触发（logs/observer.log 最新记录为 Apr 14）。crontab 当前已全部使用 `.venv/bin/python` 路径，与 Apr 14 记录的修复方向一致。
-🟡 Medium: [基础设施状态] crontab_monitor 今日两次运行（logs/crontab_monitor.log）均显示 `Error: Could not import OpenCodeClient`，说明 crontab_monitor.py 自身存在 Python 路径问题（与 observer.py 历史问题同根因）；但 Autonomous Crontab Auditor session 仍成功创建并完成（ses_2767ae48effe、ses_2715743deff），推测其通过 opencode CLI 而非直接 Python import 完成功能。
-🟢 Low: [包依赖] package.json 于 Apr 14 15:57 更新（与 Apr 14 OBSERVATIONS 一致，无新变更）：`@opencode-ai/plugin@1.3.17`，`@ai-sdk/anthropic@^3.0.66`。
-🟢 Low: [文件活动] contexts/survey_sessions/managed_agents_survey_20260413.md 在过去 48h 内有访问（mtime 变化），无内容新增，系被 reflector 或本次 observer 读取所致。
+🔴 High: [架构缺陷] ai_heartbeat observer 是纯 file-based 扫描（find -mtime），无法捕获 session 内的对话决策、被放弃的方案、口头约定约束、跨 session 推理链。修复方向：给 observer 加 session log 扫描模块，读取 `~/.local/share/opencode/opencode.db`（SQLite，`part` 表 TextPart 字段），提取昨天工作 sessions 的 assistant 回复，与 file-based 扫描并行合并写入 OBSERVATIONS.md。
+🔴 High: [基础设施修复] ai_heartbeat observer 补录成功：缺失的 2026-04-07/10/11/12 四天条目已通过手动运行 observer.py 补录；reflector 同步运行，产出规则晋升（rules/SOUL.md +18行、rules/WORKSPACE.md +1条路由、contexts/memory/OBSERVATIONS.md 精简57行、contexts/survey_sessions/oh_my_openagent_survey_20260405.md +116行、oh-my-openagent.jsonc +11行、tools/semantic_search/ 两文件更新）。
+🟡 Medium: [基础设施状态] ai_heartbeat observer 当前状态：.venv 存在，python-dotenv 1.2.2 已安装，crontab 配置正确；4月13日 10:30 的 cron 因 dotenv 缺失失败，4月13日条目为本 session 手动写入（非 cron 生成）；修复验证通过（4月9日条目成功写入）。
+🟡 Medium: [架构洞察] opencode session log 存储机制确认：SQLite 数据库位于 `~/.local/share/opencode/opencode.db`（105MB，506 session，9034 message）；三张核心表：session/message/part；TextPart 含 assistant 回复正文；长 session compact 后 ToolPart 变为 `[Old tool result content cleared]` 但 assistant text 不受影响；observer/reflector automation sessions 跑完即删（cascade 删除 parts），用户工作 sessions 保留。
+🟡 Medium: [项目状态] Pontos (datamatrix) AI 研发工作流定制完成：`docs/survey_sessions/2026-04-15-pipeline-ai-workflow-datamatrix-v1.md` 和 `v2.md` 已写入本地及学城（km.sankuai.com/collabpage/2756759579 和 2756669790，父目录 2757220461）。v2 核心改进：7模块映射规则替代三轮评分、DDL 专项 Zebra 子流程、Lion 开关强制、分层覆盖率门控（handler 80% vs 统一 60%）、MirrorFlow 状态机测试矩阵。
+🟡 Medium: [项目状态] Pontos Crane Job 实现完成：`FlinkSlaManageCrane.offlineTerminatedFlinkSlas()` 新增（@Crane("dataserver.flinksla.offlineTerminated")），调用 `RTSlaClient.offlineSla` 下线已终止 MirrorFlow 的 Flink 实时 SLA；`MirrorFlowStatus.offlinedStatuses()` 新增静态工厂方法（FAILED/KILLED/SUCCESS_AND_CLEARED/FAILED_AND_CLEARED/KILLED_AND_CLEARED）；幂等性处理：SLA 已 OFFLINE 则跳过不调用 API；19 个单测全部通过。
+🟢 Low: [技术细节] Pontos Crane Job 幂等性设计：通过检查 `sla.getStatus().equalsIgnoreCase("OFFLINE")` 实现幂等跳过；dryRun 模式复用现有 `FLINK_SLA_OFFLINE_DRY_RUN` Lion 开关；测试覆盖 ONLINE/OFFLINE/dryRun/noMatch/partialFailure 五个场景。
+
+---
+
+Date: 2026-04-16
+
+🔴 High: [架构升级] ai_heartbeat observer 新增 session log 扫描模块（periodic_jobs/ai_heartbeat/src/v0/session_log_scanner.py，186行）：通过 SQLite 只读连接 ~/.local/share/opencode/opencode.db，按日期范围查询工作 sessions 的 assistant TextPart，过滤自动化/subagent sessions（EXCLUDE_TITLE_PATTERNS），截断后拼接成 digest 注入 PROMPT_TEMPLATE。这直接解决了 Apr 15 识别的"file-based 扫描无法捕获对话决策"架构缺陷。
+🟡 Medium: [基础设施状态] observer.py 同步更新（periodic_jobs/ai_heartbeat/src/v0/observer.py）：prompt 步骤编号从 7 步扩展为 8 步，新增 step 4（session digest 注入），step 5-8 对应原 4-7；新增 session_digest 字段注入 PROMPT_TEMPLATE；scan_sessions() 调用含异常捕获（非致命，失败时 fallback 为占位文本）。
+🟢 Low: [静默日] Apr 16 全天无 opencode 工作 session（当日无工作 session 记录），无用户发起的文件变动（find -mtime -1 结果均为 Apr 15 变更的延续写入）。

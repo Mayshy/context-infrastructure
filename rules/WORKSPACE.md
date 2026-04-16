@@ -15,14 +15,14 @@
 - 每日日志：`contexts/daily_records/`
 
 ### 系统与规则
-- **Personal Skill**（个人成长型workflow）：`rules/skills/`
-  - 定位：AI 迭代、认知沉淀类工作流
-  - 调用方式：直接 Read 文件内容
+- **Workflows**（工作流程型）：`rules/workflows/`
+  - 定位：复杂任务流程、方法论、认知沉淀
+  - 调用方式：直接 Read 文件内容，边理解边执行
   - 格式：`workflow_*.md`、`bestpractice_*.md`
-- **Toolbox Skill**（工具型skill）：`~/.config/opencode/skills/`
-  - 定位：可复用的工具操作、API 调用
+- **Skills**（工具型）：`~/.config/opencode/skills/`
+  - 定位：工具操作手册，CLI / API 调用
   - 调用方式：`skill({ name: "xxx" })`
-  - 格式：`SKILL.md`（含 frontmatter name/description）
+  - 格式：`SKILL.md`（含 YAML frontmatter）
 - 核心公理（Axioms）：`rules/axioms/`
 - 记忆系统：`contexts/memory/` + `periodic_jobs/ai_heartbeat/`
 
