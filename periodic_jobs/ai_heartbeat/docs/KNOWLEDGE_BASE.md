@@ -62,6 +62,68 @@
   2. **记忆层 (L1/L2)**: 重写 `contexts/memory/OBSERVATIONS.md`。执行垃圾回收，删除已被固化进 rules 的内容以及过期的 🟢 记录。
 - **职责**: 确保 `rules/` 始终代表系统的最新“进化状态”。
 
+### 4.3 归档去重 (L2 Archiver，条件触发)
+
+当 `contexts/memory/OBSERVATIONS.md` 超过行数阈值时（默认 150 行），reflector 在完成步骤 4.2 之后，额外执行归档。
+
+**判断标准**：对每一条 🔴/🟡 条目，语义判断其描述的问题或事件是否已在后续条目中明确解决、修复或完结。若是，则该条目及对应的"解决"条目均属于"已完结事件"，移入归档。
+
+**不可归档**：
+- 永久生效的技术约束（如版本限制、API 行为约定）
+- 尚未解决的问题
+- 项目仍在进行中的状态条目
+
+**归档目标**：`contexts/memory/archive/`
+
+**文件命名**：按自然周归档，文件名为该周**周一**的日期，格式 `YYYY-MM-DD.md`（例：`2026-04-13.md` 代表 4 月 13 日那一周）。若目标文件已存在则追加；若不存在则新建，首行写入 `# Archive: week of YYYY-MM-DD`。
+
+**归档内容**：保留原始格式（含 `Date:` Header 和 🔴🟡🟢 标记），不做摘要压缩。
+
+**执行顺序**：晋升 → GC → 归档 → 从 OBSERVATIONS.md 删除已归档条目。
+
+
+## 4.4 Skill 晋升候选识别 (L2 Reflector，条件触发)
+
+Reflector 在完成步骤 4.2（晋升+GC）之后，额外执行 Skill 草稿生成。
+
+### 触发条件
+
+扫描 `contexts/memory/OBSERVATIONS.md` 中所有 🔴 High 条目，对每条判断：
+
+1. **重复性**：该主题（技术约束、方法论、工作流）是否在 **≥2 个不同日期**的条目中出现过（即使措辞不同，语义相似即算）？
+2. **可复用性**：该知识是否具有跨 session、跨项目的通用价值，且适合被编码为"下次遇到类似情况时 AI 应该怎么做"的操作指南？
+3. **尚未 skill 化**：`~/.config/opencode/skills/` 目录下是否**尚不存在**覆盖该主题的 skill？（用关键词匹配快速判断）
+
+三个条件同时满足时，该条目为**晋升候选**，生成 skill 草稿。
+
+### 草稿生成规则
+
+- **草稿目录**：`~/.config/opencode/skills/__drafts__/`（不存在则创建）
+- **文件命名**：`DRAFT_YYYYMMDD_<topic-slug>.md`（如 `DRAFT_20260416_hermes-canvas-edge-direction.md`）
+- **草稿内容**：参照现有 skill 的 SKILL.md 格式，包含：
+  - YAML frontmatter（`name`、`description` 字段，description 写清楚触发场景）
+  - 触发场景（什么情况下 AI 应该调用此 skill）
+  - 核心知识点（从 OBSERVATIONS.md 相关条目提炼，不是原文复制）
+  - 操作指南（AI 遇到此场景应该怎么做，具体步骤）
+  - 来源条目（引用原始 OBSERVATIONS.md 中的日期和条目，便于追溯）
+- **不自动发布**：草稿只写入 `__drafts__/`，不移动到正式 skills 目录，发布权留给用户确认
+
+### 执行顺序
+
+晋升 → GC → 归档（若触发）→ Skill 草稿生成
+
+### 汇报格式
+
+在 Reflector 汇报中增加一节：
+```
+【Skill 草稿】
+- 生成 N 个草稿：{文件名} — {一句话说明主题}
+- 跳过（已有 skill 覆盖）：{主题}
+- 无候选（不满足条件）：略
+```
+
+---
+
 ## 5. 执行角色隔离 (Role Isolation)
 - **Observer (L1)** 和 **Reflector (L2)** 是独立的任务阶段。
 - 在执行 **Observer** 任务时，模型应聚焦于“记录”，不要主动修改 `rules/` 目录。

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/Users/shenhuayu/.config/opencode/.venv/bin/python
 import os
 import sys
 import time
@@ -33,11 +33,18 @@ PROMPT_TEMPLATE = """
 4. **Session 日志摘要**（额外信息源）：以下是当日 opencode session 的 AI 回复摘要，包含 file-based 扫描无法捕获的对话决策、架构讨论、技术判断。请结合文件变动和这些 session 内容，提炼更完整的观测记录。
 {session_digest}
 5. **写入记忆**：将针对 {target_date} 的 🔴 🟡 🟢 观测结果直接写入或追加到 `{observations_path}`。**鼓励使用命令行 append**（如 `echo "..." >> OBSERVATIONS.md` 或 `tee -a`），避免对大文件做全文编辑。
-6. **范围约束**：**仅执行 L1 Observer 任务**。不要执行 SOP 中提到的 L2 Reflector 任务（即不要修改 `rules/` 下的任何文件，不要进行规则晋升或垃圾回收）。
-7. **格式规范**：
+6. **KB 健康度检查**（新增）：扫描 `{workspace}/contexts/projects/` 下所有项目 KB，执行以下检查：
+   a. 若当日 session 涉及某个项目的代码变更、踩坑或架构讨论，检查对应 KB 中是否已记录：
+      - 踩坑 → 是否已追加到 `01_services/{service}/gotchas.md`
+      - 架构决策 → 是否已创建 ADR 到 `03_requirements/decisions/`
+   b. 扫描各 KB 的 `AGENTS.md` 维护历史，找出"下一步"中超过 14 天未处理的待办项，在 OBSERVATIONS.md 中用 🟡 标注（格式：`🟡 KB 待办逾期：{kb名}/{待办内容}，{天数}天未处理`）。
+   c. 若发现 KB 中存在内容明显过时的 `[TODO: 需更新]` 标注，在 OBSERVATIONS.md 中用 🟢 标注提醒。
+   **注意**：此步骤只做检查和记录，不直接修改 KB 文件。KB 修改由 AI 在对话中主动完成。
+7. **范围约束**：**仅执行 L1 Observer 任务**。不要执行 SOP 中提到的 L2 Reflector 任务（即不要修改 `rules/` 下的任何文件，不要进行规则晋升或垃圾回收）。
+8. **格式规范**：
    - 日期 Header 必须严格使用 `Date: YYYY-MM-DD` 格式（Date 首字母大写，冒号后空格，日期为 ISO 格式）。
    - 在结果文件中提到任何文件或目录时，**必须使用相对于根目录的完整路径**（例如：`rules/skills/workflow_deep_research_survey.md`），不要只写文件名。
-8. **汇报**：完成后，在此回复一个简短的 Walkthrough，说明从 session 日志中提炼了哪些内容（如有）。
+9. **汇报**：完成后，在此回复一个简短的 Walkthrough，说明从 session 日志中提炼了哪些内容（如有），以及 KB 健康度检查结果（发现了哪些逾期待办或 TODO）。
 """
 
 def main():

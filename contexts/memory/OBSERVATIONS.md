@@ -57,7 +57,7 @@ Date: 2026-04-07
 Date: 2026-04-08
 
 🔴 High: [技术约束] Jackson 2.17.0 有内存泄漏 bug，必须使用 2.17.2。适用于 poros-java-api-client 及所有依赖它的服务。
-🟡 Medium: [项目状态] Poros KB 全面初始化完成（2 个 Session）。contexts/projects/poros-kb/ 目录结构建立：00_overview/（architecture.md、module_map.md、tech_stack.md）✅、01_modules/ 全部 5 个子模块 design.md ✅、03_features/（high_risk_query_throttle.md、circuit_breaker.md、dsl_filter.md）✅、02_km_summaries/ 已完成 2/7（poros_java_api_client.md、es7_compat_es8.md）⚠️；04_cross_cutting/ 和 05_runbooks/ 待写。
+🟡 Medium: [项目状态] Poros KB 全面初始化完成（2 个 Session）。contexts/projects/eagle-sdk-kb/ 目录结构建立：00_overview/（architecture.md、module_map.md、tech_stack.md）✅、01_modules/ 全部 5 个子模块 design.md ✅、03_features/（high_risk_query_throttle.md、circuit_breaker.md、dsl_filter.md）✅、02_km_summaries/ 已完成 2/7（poros_java_api_client.md、es7_compat_es8.md）⚠️；04_cross_cutting/ 和 05_runbooks/ 待写。
 🟡 Medium: [技术决策] Poros 核心架构细节：poros-high-level-client 有 5.6.3/6.8.10/7.10.0 三版本通过环境变量切换；CircuitBreakerFilter 同时实现两个接口；ResponseConstructor/RestClientPorosImpl 使用反射访问 package-private 构造器（ES 升级时高风险）；Arts v1 依赖 poros-high-level-client，v2 依赖 poros-java-api-client（更轻量但不支持限流）。
 🟡 Medium: [技术决策] poros-elasticsearch-plugin 故障降级策略：Eagle API 故障时采用宽松模式（放行请求），可用性优先于安全性；MWS header 缓存 key 只取 appKey 冒号前缀；授权撤销最多 10 分钟延迟（AuthorizationRechecker 周期）。
 

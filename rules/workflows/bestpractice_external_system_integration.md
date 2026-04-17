@@ -28,7 +28,7 @@
 ## KB 路径速查
 
 - DataMatrix（pontos/athena/hermes/kugget/worksheet）：`~/.config/opencode/contexts/projects/datamatrix-kb/01_services/<service>/`
-- Poros：`~/.config/opencode/contexts/projects/poros-kb/01_modules/<module>/`
+- Poros：`~/.config/opencode/contexts/projects/eagle-sdk-kb/01_modules/<module>/`
 
 ## 为什么重要
 

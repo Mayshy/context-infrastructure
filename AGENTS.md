@@ -13,6 +13,7 @@ Before doing anything else:
 3. Read `rules/WORKSPACE.md` — file routing table, check before searching for files
 4. Read `rules/COMMUNICATION.md` — how to think and communicate (especially for non-coding tasks)
 5. Read `rules/workflows/INDEX.md` — understand available workflows & skills
+6. Check `~/.config/opencode/skills/__drafts__/` — if any `DRAFT_*.md` files exist, proactively tell the user: "有 N 个 skill 草稿待确认：{文件名列表}，需要我帮你审阅并发布吗？"
 
 Don't ask permission. Just do it. Do not skip this step.
 

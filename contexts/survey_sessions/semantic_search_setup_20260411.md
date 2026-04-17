@@ -152,7 +152,7 @@ contexts/projects/datamatrix-kb/    （31 个文件）
   ├── 06_migration/ 8 个文件
   └── AGENTS.md
 
-contexts/projects/poros-kb/         （13 个文件）
+contexts/projects/eagle-sdk-kb/         （13 个文件）
   ├── 00_overview/   architecture.md, module_map.md, tech_stack.md
   ├── 01_modules/    5 个 design.md
   ├── 02_km_summaries/ es7_compat_es8.md, poros_java_api_client.md, INDEX.md
