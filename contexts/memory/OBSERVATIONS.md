@@ -119,10 +119,17 @@ Date: 2026-04-15
 🟡 Medium: [项目状态] Pontos Crane Job 实现完成：`FlinkSlaManageCrane.offlineTerminatedFlinkSlas()` 新增（@Crane("dataserver.flinksla.offlineTerminated")），调用 `RTSlaClient.offlineSla` 下线已终止 MirrorFlow 的 Flink 实时 SLA；`MirrorFlowStatus.offlinedStatuses()` 新增静态工厂方法（FAILED/KILLED/SUCCESS_AND_CLEARED/FAILED_AND_CLEARED/KILLED_AND_CLEARED）；幂等性处理：SLA 已 OFFLINE 则跳过不调用 API；19 个单测全部通过。
 🟢 Low: [技术细节] Pontos Crane Job 幂等性设计：通过检查 `sla.getStatus().equalsIgnoreCase("OFFLINE")` 实现幂等跳过；dryRun 模式复用现有 `FLINK_SLA_OFFLINE_DRY_RUN` Lion 开关；测试覆盖 ONLINE/OFFLINE/dryRun/noMatch/partialFailure 五个场景。
 
+
+
 ---
 
 Date: 2026-04-16
 
-🔴 High: [架构升级] ai_heartbeat observer 新增 session log 扫描模块（periodic_jobs/ai_heartbeat/src/v0/session_log_scanner.py，186行）：通过 SQLite 只读连接 ~/.local/share/opencode/opencode.db，按日期范围查询工作 sessions 的 assistant TextPart，过滤自动化/subagent sessions（EXCLUDE_TITLE_PATTERNS），截断后拼接成 digest 注入 PROMPT_TEMPLATE。这直接解决了 Apr 15 识别的"file-based 扫描无法捕获对话决策"架构缺陷。
-🟡 Medium: [基础设施状态] observer.py 同步更新（periodic_jobs/ai_heartbeat/src/v0/observer.py）：prompt 步骤编号从 7 步扩展为 8 步，新增 step 4（session digest 注入），step 5-8 对应原 4-7；新增 session_digest 字段注入 PROMPT_TEMPLATE；scan_sessions() 调用含异常捕获（非致命，失败时 fallback 为占位文本）。
-🟢 Low: [静默日] Apr 16 全天无 opencode 工作 session（当日无工作 session 记录），无用户发起的文件变动（find -mtime -1 结果均为 Apr 15 变更的延续写入）。
+🔴 High: [架构决策] Pontos Blade 多集群选择策略从随机替换为容量感知：新增 `BladeCapacityClient`（调 `blade.sankuai.com/cloudnative/promxy` 查存储使用率）、`selectLeastCapacityDb()` 实现"容量最低优先 + 全超 88% 抛异常 + 全失败降级列表第一个"；查询失败（返回 -1.0）不触发全超阈值异常（防监控抖动）；Lion Key `Pontos.Blade.Capacity.Threshold` 可动态调整阈值。ADR 存档：`contexts/projects/datamatrix-kb/03_requirements/decisions/20260416_blade_cluster_capacity_aware_selection.md`。
+🔴 High: [部署前置条件] Pontos Blade 容量感知选择依赖 Lion meta 配置中的 `cluster` 字段（如 `ad-blade-adpdw`）；若未填写，该 mirrorDb 被 skip（日志：`no meta or cluster for mirrorDb=xxx, skip`），新策略静默降级。**上线前必须在 Lion `Pontos.Mirror.Storage.Blade.MirrorDbMeta.{mirrorDb}` 中补全 `cluster` 字段。**
+🔴 High: [AI 系统架构] ulw-loop 的 Oracle 验证不自动读取 `definition_of_done.md`——Oracle 只能感知 session 对话内容和调用时手写的 prompt，不会自动注入项目 DoD 文件。解决方案：在项目 AGENTS.md 中显式写明"验证时必须读 DoD 文件"（已在 datamatrix-kb/AGENTS.md 和 eagle-sdk-kb/AGENTS.md 中添加验收标准段落）。
+🔴 High: [AI 系统架构] AI 自我学习的核心断点：知识停留在 OBSERVATIONS.md 日志层，没有自动流向能力层（skill/workflow）。修复方向：在 reflector.py 中加晋升候选识别逻辑（同主题 🔴 条目 ≥2 次 → 生成 `skills/__drafts__/DRAFT_*.md` 草稿）。脚手架管理缺"撤"的机制——所有约束全量加载，缺乏任务成熟度分层。
+🟡 Medium: [项目状态] DataMatrix KB 新增老云搜服务建档（Session 9）：`01_services/naiads/design.md` + `gotchas.md`（老云搜平台，Spring MVC + Jetty，入口 `CloudSearchServer`）、`01_services/joiner/design.md` + `gotchas.md`（单机同步 agent，入口 `JoinerServer`，每应用一实例）；AGENTS.md 子服务表区分"新 DataMatrix"和"老云搜（迁移中）"。迁移对应关系：一个 joiner 应用 → pontos 镜像 + hermes Canvas；joiner `joinSource.xml` 是 `hermes_canvas_builder.py` 的输入来源。
+🟡 Medium: [项目状态] AI 系统能力建设（Session）：两个项目 KB 的 AGENTS.md 新增"验收标准"段落（绝对路径 + 核心要求内联）；`reflector.py` 新增归档触发机制（默认阈值 200 行，`--threshold` 参数可覆盖，超阈值时 prompt 追加归档 SOP 指令）；`KNOWLEDGE_BASE.md` 新增 4.3 节归档 SOP；`observer.py` 新增 KB 健康度检查步骤。
+🟡 Medium: [工具建设] 新建 skill `skills/kb-curator/SKILL.md`（KB 维护操作手册，含新服务建档流程、gotchas 规范、健康度评估标准）；新建 skill `skills/python-cron-venv-isolation/SKILL.md`（Python cron 任务 .venv 隔离正确配置指南，由草稿 `DRAFT_20260416_python-cron-venv-isolation.md` 审阅发布）。
+🟢 Low: [技术细节] AI 系统评估结论：Document-First ✅（短板：验收标准缺失，已补）；Context Curation ⚠️（OBSERVATIONS.md 有噪声积累，reflector 归档机制已加）；结果导向指令 ✅（工具层规范成熟，日常 prompt 质量依赖习惯）。三项评估均已落地改进动作。

@@ -5,13 +5,31 @@ logs/
 __pycache__/
 *.pyc
 
-# Excluded as requested - only catclaw-related skills
-skills/catclaw-image/
-skills/catclaw-search/
-skills/friday-catclaw-mcp/
-opencode.json
-opencode.json.backup
-
 # Sensitive - never commit actual .env files
 .env
 **/.env
+opencode.json
+opencode.json.backup
+
+# ── 美团内部 skills（含内部 API / SSO / 平台逻辑，不对外公开）──
+skills/calendar-mcp/
+skills/catpaw-agent/
+skills/catpaw-knowledge-base/
+skills/citadel/
+skills/citadel-database/
+skills/daxiang-scheduled-message/
+skills/eagle-skill/
+skills/friday-catclaw-mcp/
+skills/mtsso-skills-official/
+skills/nocode-cli/
+skills/release-notes-updater/
+skills/release-notes-updater.zip
+skills/room-booking-helper/
+skills/skillhub/
+# catclaw 系列（已有）
+skills/catclaw-image/
+skills/catclaw-search/
+
+# ── 美团内部知识库（项目架构/设计文档，合规敏感）──
+contexts/projects/eagle-sdk-kb/
+contexts/projects/datamatrix-kb/
