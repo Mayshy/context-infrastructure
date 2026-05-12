@@ -36,6 +36,20 @@
 └── poros-java-api-client/ # 生成的 API 客户端
 ```
 
+### eagle_meta 聚合工作区
+
+```
+/Users/shenhuayu/Desktop/Project/eagle_meta/
+├── poros/                    # symlink → poros/
+├── es5-client/               # symlink → es5-client/
+├── TestEagleClient/          # symlink → TestEagleClient/
+├── logcenter-esclient/       # symlink → logcenter-esclient/（日志中心 ES 客户端）
+├── logcenter-elasticsearch/  # symlink → log/elasticsearch（日志 SDK logcenter-esclient 对应的 ES 底层包源码）
+└── kb/                       # symlink → eagle-sdk-kb/
+```
+
+> `logcenter-elasticsearch` 是 `logcenter-esclient` 所依赖的 ES 底层包的源码，对应 `/Users/shenhuayu/Desktop/Project/log/elasticsearch`。
+
 ---
 
 ## 学城文档访问

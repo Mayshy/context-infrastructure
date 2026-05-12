@@ -47,6 +47,8 @@
 
 特定任务的完整工作流程。
 
+- [代码审查工作流](./workflow_code_review.md) ✅ — 三阶段代码审查：质量五轴 → 简化识别 → 性能检测；Java 代码自动触发专项分支（`java-code-review`、`java-concurrency-review`、`java-performance-smells`、`spring-boot-patterns`）
+- [DataMatrix 缺陷扫描工作流](./workflow_datamatrix_defect_scan.md) ✅ — DataMatrix 项目存量缺陷扫描；7 大类别（事务/Mafka/资源/Null/并发/Lion/性能）；L1 按需扫描 + L2 月度全量；含已知高风险文件清单和 tech_debt.md 追踪机制
 - [并行 Subagent 工作流](./workflow_parallel_subagents.md) ✅ — 调用后台 agent、并行执行多个 subagent
   - **必读**：初次使用并行 subagent 前，必须先读此 skill
   - **禁止轮询**：agent 运行期间不要反复调用 `background_output`，系统会自动通知
@@ -75,9 +77,13 @@
 - [时间敏感信息验证](./bestpractice_temporal_info_verification.md) ✅ — 验证可能超出 knowledge cutoff 的信息
 - [分阶段工作法](./bestpractice_staged_approach.md) ✅ — 隔离-处理-验证闭环，破坏性操作前 Dry Run
 - [多 Agent 并行 analysis](./bestpractice_multi_agent_analysis.md) ✅ — Topic 分割 50% 重叠、交叉验证
-- [AI 辅助调试诊断](./bestpractice_ai_debugging_diagnosis.md) ✅ — "代码改不好"的根因诊断决策树
+- [AI 辅助调试诊断](./bestpractice_ai_debugging_diagnosis.md) ✅ — "代码改不好"的根因诊断决策树；含 ES Sniffer TimeoutException vs ClassNotFoundException 分类框架
 - [AI 产品设计原则](./bestpractice_ai_product_design.md) ✅ — 线性聊天 vs 知识工作、感知规则解耦
 - [AI Agent 上下文注入与知识持久化](./bestpractice_ai_agent_context_injection.md) ✅ — 子 Agent 不自动注入 DoD、file-based 扫描盲区、知识流向能力层的完整路径
+- [Java 设计原则](./bestpractice_java_design_principles.md) ✅ — SOLID 五原则速查 + DataMatrix 场景示例 + 架构反模式识别；`workflow_code_review.md` Phase 2 按需参考
+- [TiDB 批量写入最佳实践](./bestpractice_tidb_batch_write.md) ✅ — batch size ≤200 约束、rewriteBatchedStatements 两大陷阱、multi-row INSERT/upsert 显式构造模式
+- [Spark RDD 常见陷阱](./bestpractice_spark_rdd_pitfalls.md) ✅ — 未 persist 导致重复 Action、冗余 count()、mapPartitions 内每行 new 对象
+- [MySQL JSON 列操作陷阱](./bestpractice_mysql_json_column.md) ✅ — json_extract() 对空字符串报错、NULLIF 修复模式
 
 ---
 

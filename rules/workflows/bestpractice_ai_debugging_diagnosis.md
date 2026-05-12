@@ -109,8 +109,29 @@ AI 改不好代码
 - 配合 `bestpractice_staged_approach.md` 的验证机制
 - 配合系统提示词中的 Todo 任务管理机制进行任务分解
 
+---
+
+## ES / Java 服务启动报错快速分类
+
+### ES Sniffer 启动报错
+
+**核心判断框架（2026-04-21 验证）：**
+
+| 报错特征 | 根因 | 处理方向 |
+|---------|------|---------|
+| stack trace 含 `NoSuchMethodError` / `ClassNotFoundException` | 依赖版本冲突 | 检查 pom.xml，排除冲突依赖 |
+| 只有 `TimeoutException` 来自 `BasicFuture.get()`，无类加载错误 | **网络层超时**，非版本问题 | 检查 ES host 配置是否注入正确 |
+
+**重要背景：**
+- Sniffer 线程（`es_rest_client_sniffer[T#1]`）是后台定时线程，报错不阻断 Spring 启动
+- `poros-client` 被移除时，`PorosRestClientBuilder` 使用的 `PorosNodesSniffer`/`EagleApiProxy` 节点列表来源会丢失，导致 ES host 注入失败
+- 移除 `poros-client` 前必须确认替代的节点来源（如 `poros-java-api-client`）
+
+---
+
 ## 变更日志
 
 | 日期 | 变更 |
 |------|------|
 | 2026-02-21 | 初始版本，来自 2026-01-19 观察记录 |
+| 2026-05-11 | 新增 ES Sniffer 启动报错快速分类（来自 2026-04-21 观察） |

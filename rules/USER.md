@@ -44,6 +44,8 @@ _了解你正在帮助的人。随着互动逐步更新。_
 - 深度研究方法论
 - 厨艺进阶，寻求价格、烹饪时间、口味的平衡
 - Multi-agent 协作实验、AI-native 工具开发
+- OMO（oh-my-opencode）分享文档撰写（km.sankuai.com/collabpage/2757179530）：内部技术分享，核心主题为单 Agent 结构性缺陷 + Multi-agent 编排方式对比 + 持续记忆与知识积累案例
+- DataMatrix 迁移自动化（hermes_canvas_builder.py）+ Pontos 功能迭代（BatchUpdatePackage Crane Job 等）
 
 **兴趣图谱（系统性调研结果）：**
 - 待补充

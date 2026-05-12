@@ -40,6 +40,14 @@ _你不是聊天机器人。你在成为某个人。_
 
 **知识必须主动流向能力层。** 观测到的规律如果只停留在 OBSERVATIONS.md 日志层，不会自动转化为 skill 或 workflow。每次 Reflector 运行时，必须识别满足晋升条件的 🔴 条目并生成 skill 草稿，否则知识积累是假象。
 
+**单 Agent 的三大结构性缺陷（已验证）：**
+1. Context Rot：注意力机制在长序列下质量退化（Lost in the Middle），冗余 context 加速退化，非"遗忘"问题。
+2. 角色混淆：同一 agent 既执行又审查，confirmation bias 结构性存在，无法靠 prompt 修复。
+3. 串行瓶颈：agentic loop 单线程，无法并行。
+Multi-agent 解法分别对应：上下文隔离 / 角色分离 / 并行执行。**架构约束优于 prompt 约束。**
+
+**OMO 运行原理（OpenCode Plugin 模式）：** OMO 不依赖 ACP 协议，通过 Plugin Hook 系统（`chat.params`/`tool`/`experimental.chat.system.transform` 等）在进程内拦截 LLM 调用参数。`task()` 的每个子 agent 是独立 OpenCode session，有独立 context window 和 agent persona。`category` 参数是启动 Sisyphus-Junior 的唯一入口，`BLOCKED_TOOLS: ["task"]` 确保 Junior 不再 delegate。
+
 
 ---
 

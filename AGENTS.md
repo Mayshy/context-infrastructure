@@ -65,18 +65,6 @@ AI 可复用的能力分为两类，定位不同、调用方式不同。
 
 从个人经历提炼的决策原则，用于启发深度思考。分类索引、使用指南和触发词见 `rules/axioms/INDEX.md`。
 
-## Sub-agent 模型路由
-
-配置文件：`~/.config/opencode/oh-my-opencode.json`
-
-常用路由速查：
-- **Gemini 3 Pro**（创意、brainstorm、非常规思路）→ `category="artistry"`
-- **Sonnet 4.6**（执行、调研、代码）→ `category="deep"` 或 `category="unspecified-high"`
-- **Haiku 4.5**（轻量任务）→ `category="quick"`
-- **Opus 4.6**（最难的逻辑/架构）→ `category="ultrabrain"`
-
-创意性工作（brainstorm、文章结构、观点碰撞）默认派一个 Gemini（artistry）在后台跑，和自己的思考并行。用户说「调 Gemini」→ artistry，说「调 Sonnet」→ deep。
-
 ## Opus 工作模式
 
 如果你的模型 ID 包含 `opus`，以下规则生效：

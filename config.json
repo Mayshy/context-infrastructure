@@ -1,0 +1,11 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": [
+    "file:///Users/shenhuayu/.pipeline-ai-workflow/repo/hooks/opencode/plugin.ts"
+  ],
+  "skills": {
+    "paths": [
+      "/Users/shenhuayu/.pipeline-ai-workflow/repo/skills"
+    ]
+  }
+}

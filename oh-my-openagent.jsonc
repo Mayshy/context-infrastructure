@@ -32,13 +32,13 @@
     },
     "librarian": {
       // Docs and code search - uses MiniMax for speed
-      "model": "minimax/MiniMax-M2.7",
+      "model": "meituan/claude-sonnet-4-6",
       "temperature": 0.3,
       "max_tokens": 8192
     },
     "explore": {
       // Fast codebase grep - uses MiniMax for speed
-      "model": "minimax/MiniMax-M2.7",
+      "model": "meituan/claude-sonnet-4-6",
       "temperature": 0.3,
       "max_tokens": 8192
     },
@@ -53,9 +53,9 @@
   // Maps task type to default agent
   "category_default_model": {
     "deep": "meituan/claude-opus-4-6",
-    "quick": "minimax/MiniMax-M2.7",
+    "quick": "meituan/claude-sonnet-4-6",
     "ultrabrain": "meituan/claude-opus-4-6",
-    "visual-engineering": "minimax/MiniMax-M2.7",
+    "visual-engineering": "meituan/claude-sonnet-4-6",
     "business-logic": "meituan/claude-opus-4-6",
     "reasoning": "meituan/claude-opus-4-6",
     "creative": "meituan/claude-opus-4-6"
