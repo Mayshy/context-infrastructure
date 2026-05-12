@@ -57,7 +57,7 @@ oa-skills citadel getChildContent --contentId {id} --mis shenhuayu
 
 ---
 
-## KB 当前完成度（2026-04-07 初始化）
+## KB 当前完成度（2026-04-20 更新）
 
 | 模块 | 状态 |
 |------|------|
@@ -70,9 +70,10 @@ oa-skills citadel getChildContent --contentId {id} --mis shenhuayu
 | 03_features/high_risk_query_throttle.md | ✅ 完整 |
 | 03_features/circuit_breaker.md | ✅ 完整 |
 | 03_features/dsl_filter.md | ✅ 完整 |
-| 02_km_summaries（学城文档摘要） | ⚠️ 2/7 已完成（poros-java-api-client、es7-compat-es8） |
-| 04_cross_cutting/ | ❌ 待写 |
-| 05_runbooks/ | ❌ 待写 |
+| 02_km_summaries（学城文档摘要） | ✅ 7/7 已完成 |
+| 04_cross_cutting/deployment_ops.md | ✅ 完整（部署与运维规范） |
+| 05_runbooks/troubleshooting.md | ✅ 完整（故障排查手册） |
+| 05_runbooks/version_upgrade.md | ✅ 完整（版本升级手册） |
 
 ---
 
@@ -89,6 +90,25 @@ oa-skills citadel getChildContent --contentId {id} --mis shenhuayu
 ---
 
 ## 维护历史
+
+### 2026-04-20（Session 3）— KB 补全
+
+**完成内容**：
+- `02_km_summaries/arts_client.md`：Arts 客户端完整摘要（v1/v2 对比、依赖配置、升级参数变更）
+- `02_km_summaries/snapshot_client.md`：实验性 Poros 客户端摘要（Snapshot 版本说明）
+- `02_km_summaries/log_client.md`：日志客户端摘要（学城原文为空，记录已知信息）
+- `02_km_summaries/performance_test.md`：客户端性能测试摘要（学城原文为空）
+- `02_km_summaries/client_features.md`：客户端特性说明摘要（学城原文为空，从代码整理）
+- `04_cross_cutting/deployment_ops.md`：部署与运维规范（模块发布情况、定时任务、Lion 配置、版本选择指南）
+- `05_runbooks/troubleshooting.md`：故障排查手册（鉴权失败/限流/高风险查询/熔断器/包冲突/Jackson 内存泄漏）
+- `05_runbooks/version_upgrade.md`：版本升级手册（poros-high-level-client/arts-client v1→v2/Snapshot 规范）
+
+**关键认知（本次新增）**：
+- Arts 客户端 v2 最新版本为 6.0.2（学城记录为 6.0.2，之前 KB 记录为 6.0.1，已更正）
+- 3 篇学城文档（性能测试 2542107392、特性说明 1560978827、日志客户端 2727344046）均为空页
+- 实验性 Poros 客户端文档（1201253124）内容较少，仅记录了 ES5 版本的 Snapshot 示例
+
+---
 
 ### 2026-04-07（Session 2）— 知识飞轮第一轮
 

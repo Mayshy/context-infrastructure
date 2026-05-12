@@ -48,12 +48,6 @@ Date: 2026-04-06
 
 ---
 
-Date: 2026-04-07
-
-🟡 Medium: [新 Skill] skills/release-notes-updater/ 新建（~20:06），用于从 git commit range 提取变更并更新学城 release notes 文档。预置表格模板位于 skills/release-notes-updater/references/table-template.md。触发词：更新 release notes、把最近变更写进 release notes。
-
----
-
 Date: 2026-04-08
 
 🔴 High: [技术约束] Jackson 2.17.0 有内存泄漏 bug，必须使用 2.17.2。适用于 poros-java-api-client 及所有依赖它的服务。
@@ -73,12 +67,6 @@ Date: 2026-04-09
 
 ---
 
-Date: 2026-04-10
-
-🟡 Medium: [工具理解] superpowers:* skills 调研完成：superpowers 不是独立 plugin，是 oh-my-openagent 的内置 skills；obra/superpowers 第三方 plugin 不推荐额外安装（功能高度重叠，维护负担高）；当前配置无需变更。
-
----
-
 Date: 2026-04-11
 
 🔴 High: [架构约束] Eagle SDK 可观测性缺失根因：打点各自为政（高风险查询/慢查询/限流熔断/业务异常 分属 Cat/Rhino/日志三个系统，无统一语义层）。修复方向：统一异常分类（业务异常/系统异常/noise）+ 延迟分层（SDK处理/网络/ES执行）+ 上下文标准化（集群名/索引名/查询模板ID/SDK版本）。这是 Poros SLO 大盘准确性的前置条件。
@@ -95,31 +83,11 @@ Date: 2026-04-13
 
 ---
 
-Date: 2026-04-12
-
-🔴 High: [基础设施故障] ai_heartbeat observer cron 于 Apr 12 10:30 因 `ModuleNotFoundError: No module named 'dotenv'` 静默失败（logs/observer.log 第 21-33 行）：cron 使用系统 python3（非 .venv），.venv/bin/python 路径在该时间点不存在或未正确配置。导致 Apr 12 observer 任务完全跳过，本条目为事后手动补录。根因与 Apr 14 记录一致，修复方向：cron 命令使用 .venv/bin/python。
-🟢 Low: [静默日] Apr 12 全天无 opencode 工作 session，无文件变动（find -mtime 扫描结果为空）。无需补录任何项目进展或技术决策。
-
----
-
-Date: 2026-04-14
-
-🔴 High: [基础设施修复] ai_heartbeat observer cron 的 `ModuleNotFoundError: No module named 'dotenv'` 根因已定位：cron 使用系统 python3 而非 .venv/bin/python，且 .venv 在 Apr 12-13 时不存在。修复方案：在 .venv 中安装 python-dotenv（`python-dotenv-1.2.2` 已于 Apr 13 安装至 `.venv/lib/python3.14/site-packages/dotenv/`），cron 命令需显式使用 `.venv/bin/python`。这是 observer 自动化运行的前置条件，直接影响记忆系统的连续性。
-🟢 Low: [静默日] Apr 14 全天无 opencode 工作 session（当日无工作 session 记录），无用户发起的文件变动。observer.log 显示 Apr 14 的 observer 任务已由自动化脚本触发并成功完成（ses_2762cf7d7ffeXfUtrxGcqTj0F3）。
-
----
-
 Date: 2026-04-15
 
-🔴 High: [架构缺陷] ai_heartbeat observer 是纯 file-based 扫描（find -mtime），无法捕获 session 内的对话决策、被放弃的方案、口头约定约束、跨 session 推理链。修复方向：给 observer 加 session log 扫描模块，读取 `~/.local/share/opencode/opencode.db`（SQLite，`part` 表 TextPart 字段），提取昨天工作 sessions 的 assistant 回复，与 file-based 扫描并行合并写入 OBSERVATIONS.md。
-🔴 High: [基础设施修复] ai_heartbeat observer 补录成功：缺失的 2026-04-07/10/11/12 四天条目已通过手动运行 observer.py 补录；reflector 同步运行，产出规则晋升（rules/SOUL.md +18行、rules/WORKSPACE.md +1条路由、contexts/memory/OBSERVATIONS.md 精简57行、contexts/survey_sessions/oh_my_openagent_survey_20260405.md +116行、oh-my-openagent.jsonc +11行、tools/semantic_search/ 两文件更新）。
-🟡 Medium: [基础设施状态] ai_heartbeat observer 当前状态：.venv 存在，python-dotenv 1.2.2 已安装，crontab 配置正确；4月13日 10:30 的 cron 因 dotenv 缺失失败，4月13日条目为本 session 手动写入（非 cron 生成）；修复验证通过（4月9日条目成功写入）。
 🟡 Medium: [架构洞察] opencode session log 存储机制确认：SQLite 数据库位于 `~/.local/share/opencode/opencode.db`（105MB，506 session，9034 message）；三张核心表：session/message/part；TextPart 含 assistant 回复正文；长 session compact 后 ToolPart 变为 `[Old tool result content cleared]` 但 assistant text 不受影响；observer/reflector automation sessions 跑完即删（cascade 删除 parts），用户工作 sessions 保留。
 🟡 Medium: [项目状态] Pontos (datamatrix) AI 研发工作流定制完成：`docs/survey_sessions/2026-04-15-pipeline-ai-workflow-datamatrix-v1.md` 和 `v2.md` 已写入本地及学城（km.sankuai.com/collabpage/2756759579 和 2756669790，父目录 2757220461）。v2 核心改进：7模块映射规则替代三轮评分、DDL 专项 Zebra 子流程、Lion 开关强制、分层覆盖率门控（handler 80% vs 统一 60%）、MirrorFlow 状态机测试矩阵。
-🟡 Medium: [项目状态] Pontos Crane Job 实现完成：`FlinkSlaManageCrane.offlineTerminatedFlinkSlas()` 新增（@Crane("dataserver.flinksla.offlineTerminated")），调用 `RTSlaClient.offlineSla` 下线已终止 MirrorFlow 的 Flink 实时 SLA；`MirrorFlowStatus.offlinedStatuses()` 新增静态工厂方法（FAILED/KILLED/SUCCESS_AND_CLEARED/FAILED_AND_CLEARED/KILLED_AND_CLEARED）；幂等性处理：SLA 已 OFFLINE 则跳过不调用 API；19 个单测全部通过。
-🟢 Low: [技术细节] Pontos Crane Job 幂等性设计：通过检查 `sla.getStatus().equalsIgnoreCase("OFFLINE")` 实现幂等跳过；dryRun 模式复用现有 `FLINK_SLA_OFFLINE_DRY_RUN` Lion 开关；测试覆盖 ONLINE/OFFLINE/dryRun/noMatch/partialFailure 五个场景。
-
-
+🟡 Medium: [项目状态] Pontos Crane Job 实现完成：`FlinkSlaManageCrane.offlineTerminatedFlinkSlas()` 新增（@Crane("dataserver.flinksla.offlineTerminated")），调用 `RTSlaClient.offlineSla` 下线已终止 MirrorFlow 的 Flink 实时 SLA；`MirrorFlowStatus.offlinedStatuses()` 新增静态工厂方法；幂等性处理：SLA 已 OFFLINE 则跳过；19 个单测全部通过。
 
 ---
 
@@ -127,9 +95,30 @@ Date: 2026-04-16
 
 🔴 High: [架构决策] Pontos Blade 多集群选择策略从随机替换为容量感知：新增 `BladeCapacityClient`（调 `blade.sankuai.com/cloudnative/promxy` 查存储使用率）、`selectLeastCapacityDb()` 实现"容量最低优先 + 全超 88% 抛异常 + 全失败降级列表第一个"；查询失败（返回 -1.0）不触发全超阈值异常（防监控抖动）；Lion Key `Pontos.Blade.Capacity.Threshold` 可动态调整阈值。ADR 存档：`contexts/projects/datamatrix-kb/03_requirements/decisions/20260416_blade_cluster_capacity_aware_selection.md`。
 🔴 High: [部署前置条件] Pontos Blade 容量感知选择依赖 Lion meta 配置中的 `cluster` 字段（如 `ad-blade-adpdw`）；若未填写，该 mirrorDb 被 skip（日志：`no meta or cluster for mirrorDb=xxx, skip`），新策略静默降级。**上线前必须在 Lion `Pontos.Mirror.Storage.Blade.MirrorDbMeta.{mirrorDb}` 中补全 `cluster` 字段。**
-🔴 High: [AI 系统架构] ulw-loop 的 Oracle 验证不自动读取 `definition_of_done.md`——Oracle 只能感知 session 对话内容和调用时手写的 prompt，不会自动注入项目 DoD 文件。解决方案：在项目 AGENTS.md 中显式写明"验证时必须读 DoD 文件"（已在 datamatrix-kb/AGENTS.md 和 eagle-sdk-kb/AGENTS.md 中添加验收标准段落）。
-🔴 High: [AI 系统架构] AI 自我学习的核心断点：知识停留在 OBSERVATIONS.md 日志层，没有自动流向能力层（skill/workflow）。修复方向：在 reflector.py 中加晋升候选识别逻辑（同主题 🔴 条目 ≥2 次 → 生成 `skills/__drafts__/DRAFT_*.md` 草稿）。脚手架管理缺"撤"的机制——所有约束全量加载，缺乏任务成熟度分层。
-🟡 Medium: [项目状态] DataMatrix KB 新增老云搜服务建档（Session 9）：`01_services/naiads/design.md` + `gotchas.md`（老云搜平台，Spring MVC + Jetty，入口 `CloudSearchServer`）、`01_services/joiner/design.md` + `gotchas.md`（单机同步 agent，入口 `JoinerServer`，每应用一实例）；AGENTS.md 子服务表区分"新 DataMatrix"和"老云搜（迁移中）"。迁移对应关系：一个 joiner 应用 → pontos 镜像 + hermes Canvas；joiner `joinSource.xml` 是 `hermes_canvas_builder.py` 的输入来源。
-🟡 Medium: [项目状态] AI 系统能力建设（Session）：两个项目 KB 的 AGENTS.md 新增"验收标准"段落（绝对路径 + 核心要求内联）；`reflector.py` 新增归档触发机制（默认阈值 200 行，`--threshold` 参数可覆盖，超阈值时 prompt 追加归档 SOP 指令）；`KNOWLEDGE_BASE.md` 新增 4.3 节归档 SOP；`observer.py` 新增 KB 健康度检查步骤。
-🟡 Medium: [工具建设] 新建 skill `skills/kb-curator/SKILL.md`（KB 维护操作手册，含新服务建档流程、gotchas 规范、健康度评估标准）；新建 skill `skills/python-cron-venv-isolation/SKILL.md`（Python cron 任务 .venv 隔离正确配置指南，由草稿 `DRAFT_20260416_python-cron-venv-isolation.md` 审阅发布）。
-🟢 Low: [技术细节] AI 系统评估结论：Document-First ✅（短板：验收标准缺失，已补）；Context Curation ⚠️（OBSERVATIONS.md 有噪声积累，reflector 归档机制已加）；结果导向指令 ✅（工具层规范成熟，日常 prompt 质量依赖习惯）。三项评估均已落地改进动作。
+🟡 Medium: [项目状态] DataMatrix KB 新增老云搜服务建档（Session 9）：`01_services/naiads/design.md` + `gotchas.md`、`01_services/joiner/design.md` + `gotchas.md`；迁移对应关系：一个 joiner 应用 → pontos 镜像 + hermes Canvas；joiner `joinSource.xml` 是 `hermes_canvas_builder.py` 的输入来源。
+🟡 Medium: [工具建设] 新建 skill `skills/kb-curator/SKILL.md`（KB 维护操作手册）；新建 skill `skills/python-cron-venv-isolation/SKILL.md`（Python cron 任务 .venv 隔离正确配置指南）。
+
+---
+
+Date: 2026-04-19
+
+🟡 Medium: [KB 待办逾期] contexts/projects/datamatrix-kb/AGENTS.md — Session 3 三项待办（P2 学城摘要 Embedding 2734774411/应用迁移 2711712987/spark包管理 2748398827、`04_cross_cutting/data_lineage.md` 填充、`05_runbooks/` 填充）自 2026-04-05 起已 **14 天**未处理，正式触发逾期阈值。
+🟡 Medium: [KB 待办逾期临近] contexts/projects/eagle-sdk-kb/AGENTS.md — `02_km_summaries` 仅完成 2/7（5 篇未写）、`04_cross_cutting/` 和 `05_runbooks/` 均为空，自 2026-04-07 初始化起已 **12 天**未推进，距 14 天阈值还剩 2 天。
+🟡 Medium: [KB 待办] contexts/projects/datamatrix-kb/AGENTS.md — Session 8 下一步：Lion 配置中各 mirrorDb meta 的 `cluster` 字段未补充（Blade 容量感知选择策略上线前置条件），自 2026-04-16 起已 3 天。
+
+---
+
+Date: 2026-04-20
+
+🔴 High: [架构洞察] OMO 不依赖 ACP 协议，是标准 OpenCode Plugin，通过 Plugin Hook 系统（`chat.params`/`tool`/`experimental.chat.system.transform` 等 10+ 种 Hook）在进程内拦截 LLM 调用参数。`task()` 工具实现原理：category 路由解析模型 → `ctx.client.session.create()` 创建独立 session → `ctx.client.session.promptAsync()` 向新 session 发送 prompt，每个子 agent 是独立 OpenCode session，有独立 context window 和 agent persona。
+🔴 High: [架构洞察] 单 Agent 三大结构性缺陷：① Context Rot（注意力机制在长序列下质量退化，非"遗忘"，Lost in the Middle 现象，冗余 context 加速退化）；② 角色混淆（同一 agent 既执行又审查，confirmation bias 结构性存在，无法靠 prompt 修复）；③ 串行瓶颈（agentic loop 单线程）。Multi-agent 解法分别对应：上下文隔离 / 角色分离 / 并行执行。架构约束优于 prompt 约束是核心判断。
+🔴 High: [系统修复] observer.py 两个 bug 已修复：① `PROMPT_TEMPLATE` 中 4 个字面量花括号（`{service}`、`{kb名}`、`{待办内容}`、`{天数}`）被 `str.format()` 当成占位符导致 `KeyError: 'service'`，已转义为 `{{...}}`；② 默认扫描日期 `datetime.now()` 改为 `datetime.now() - timedelta(days=1)`，防止 10:30 cron 扫描当天时遗漏下午 session。
+🟡 Medium: [项目状态] cs_mafka 数据格式梳理完成，文档已创建：km.sankuai.com/collabpage/2757899226。两种子格式：Joiner（识别特征：无 `parentFields`/Arts 类名，逻辑主键字段 `keyFields`）/ Arts（识别特征：含 `parentFields` 或 Arts 类名，逻辑主键字段 `parentFields`，额外字段 `tags`）。格式识别是字符串匹配（基于第一条消息，后续复用同一 Gson 实例）；DELETE 主键优先取 `fields`，为空降级到 `keyFields`/`parentFields`；无变更时间戳，`changeTime` 取 Pontos 接收时间；字段名大小写不敏感（`TreeMap(CASE_INSENSITIVE_ORDER)`）。
+🟡 Medium: [项目状态] OMO 分享文档（km.sankuai.com/collabpage/2757179530）完成第一节全部内容：1.1 单 Agent 结构性问题（含 Context Rot 机制、对照表、Mermaid 流程图）；1.2 Agent 划分三种方式表格（按工具/能力最稳定→按领域知识次稳定→按角色/工序最易变）；1.3 OMO 定位（category 路由、工具权限硬隔离、Hooks/Skills）；1.4 使用路径（官方决策树+五种路径对比表）。
+🟡 Medium: [Harness Agent 评估] 当前系统 vs 行业标准七维评级：记忆管理（强，温层缺失+知识流动依赖模型执行质量）；多 Agent 编排（中强，角色设计超前，并行 agent 无共享状态/无冲突解决协议）；自我迭代（中，管道三断点：skill 草稿触发条件保守/草稿无提醒机制/skill 质量无验证闭环）；上下文注入（中，主 agent 强，子 agent 是已知盲点）。行业共识：scaffold 质量几乎与模型质量同等重要（SWE-bench Pro SOTA 45.9%）。
+🟡 Medium: [Observer 根因] 4.16 被标记"静默日"的三层叠加原因：① L1 observer 10:30 跑时 4.16 工作 session 尚未开始（16:26 才创建）；② 4.16 的 L1 observer 根本未运行（无 Heartbeat L1 session）；③ L2 Reflector 越权在 18:33 写了当日条目（Reflector 无 session 扫描能力，基于不完整文件变动推断"静默日"）。幂等性过早锁定导致后续无法补救。Reflector 无幂等保护（每次运行无条件触发）是系统性缺陷。
+🟡 Medium: [KB 待办逾期] contexts/projects/datamatrix-kb — Session 3 待办（P2 摘要 3 篇已在 Session 11 完成；`04_cross_cutting/data_lineage.md` 和 `05_runbooks/` 两个占位符已在 Session 11 填充）逾期待办已清零。Session 11 新增下一步：P3 摘要（HBase 2716815553、镜像切换细节 2731293914）和血缘查询 API 确认，自 2026-04-20 起计。
+🟡 Medium: [KB 待办逾期] contexts/projects/eagle-sdk-kb — 2026-04-20 Session 3 完成全部 7 篇学城摘要 + `04_cross_cutting/deployment_ops.md` + `05_runbooks/` 两个手册，KB 完成度达 100%，逾期待办已清零（此前 13 天未推进）。
+🟢 Low: [任务流水] datamatrix-kb Session 11 完成 P2 待办补全：新建 `02_km_summaries/embedding_support.md`、`02_km_summaries/app_migration.md`、`02_km_summaries/spark_flink_packages.md`、`04_cross_cutting/data_lineage.md`、`05_runbooks/es_index_ops.md`、`05_runbooks/spark_flink_debug.md`，更新 INDEX.md。
+🟢 Low: [任务流水] eagle-sdk-kb Session 3 完成 KB 补全：新建 `02_km_summaries/arts_client.md`、`snapshot_client.md`、`log_client.md`、`performance_test.md`、`client_features.md`、`04_cross_cutting/deployment_ops.md`、`05_runbooks/troubleshooting.md`、`05_runbooks/version_upgrade.md`，AGENTS.md 完成度表更新为全绿。
+🟢 Low: [任务流水] observer.py 修复后手动补跑 4.16 observer（删除错误"静默日"条目，重跑写入 7 条真实工作记录：Blade 容量感知选择、AI 系统架构洞察等）。

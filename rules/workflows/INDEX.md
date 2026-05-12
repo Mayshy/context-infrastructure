@@ -77,6 +77,7 @@
 - [多 Agent 并行 analysis](./bestpractice_multi_agent_analysis.md) ✅ — Topic 分割 50% 重叠、交叉验证
 - [AI 辅助调试诊断](./bestpractice_ai_debugging_diagnosis.md) ✅ — "代码改不好"的根因诊断决策树
 - [AI 产品设计原则](./bestpractice_ai_product_design.md) ✅ — 线性聊天 vs 知识工作、感知规则解耦
+- [AI Agent 上下文注入与知识持久化](./bestpractice_ai_agent_context_injection.md) ✅ — 子 Agent 不自动注入 DoD、file-based 扫描盲区、知识流向能力层的完整路径
 
 ---
 

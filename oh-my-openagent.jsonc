@@ -23,6 +23,13 @@
       "temperature": 0.3,
       "max_tokens": 8192
     },
+    "metis": {
+      // Pre-planning consultant: identifies hidden intent, ambiguities, AI failure points
+      // 0.5 matches prometheus (planning) — needs some divergent thinking to surface edge cases
+      "model": "meituan/claude-opus-4-6",
+      "temperature": 0.5,
+      "max_tokens": 8192
+    },
     "librarian": {
       // Docs and code search - uses MiniMax for speed
       "model": "minimax/MiniMax-M2.7",

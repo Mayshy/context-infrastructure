@@ -41,7 +41,25 @@ SOP: {kb_path}
    - 不自动发布到正式 skills 目录，只写 __drafts__/
 
 晋升门槛：跨项目通用 + 多次验证 + 有明确适用场景
-完成后回复简短汇报，包含晋升内容和 Skill 草稿两节（格式见 SOP 6 节）。
+
+完成后**必须执行以下两步**：
+5. 将本次执行的完整汇报 summary 写入文件 `{summary_path}`，格式如下：
+   ```
+   # Reflector Summary — {target_date}
+
+   ## 晋升内容
+   （列出晋升到 rules/ 的条目，或"无"）
+
+   ## GC 结果
+   （删除了哪些条目，OBSERVATIONS.md 从 N 行减少到 M 行）
+
+   ## Skill 草稿
+   （生成了哪些草稿文件，或"无候选"）
+
+   ## 备注
+   （其他说明）
+   ```
+6. 在 Chat 中回复上述 summary 的简短版本（格式见 SOP 6 节）。
 """
 
 ARCHIVE_ADDON = """
@@ -117,10 +135,14 @@ def main():
     print(f"OBSERVATIONS.md: {current_lines} lines (threshold: {args.threshold}) -> archive: {needs_archive}")
 
     os.makedirs(SKILLS_DRAFTS_DIR, exist_ok=True)
+    os.makedirs(ARCHIVE_DIR, exist_ok=True)
+    summary_path = os.path.join(ARCHIVE_DIR, f"reflector-{target_date}.md")
     prompt = PROMPT_TEMPLATE.format(
         kb_path=KNOWLEDGE_BASE,
         workspace=WORKSPACE,
         skills_drafts_dir=SKILLS_DRAFTS_DIR,
+        summary_path=summary_path,
+        target_date=target_date,
     )
     if needs_archive:
         os.makedirs(ARCHIVE_DIR, exist_ok=True)
